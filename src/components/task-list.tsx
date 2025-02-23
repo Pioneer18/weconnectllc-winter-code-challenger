@@ -3,6 +3,7 @@
 import { useEffect, useState, memo, Component } from "react";
 import { Task } from "@/types/task";
 import TaskItem from "./task-item";
+import React from "react";
 
 const LoadingState = () => (
   <div className="space-y-4">
@@ -48,7 +49,7 @@ export default function TaskList() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  const fetchTasks = async (pageNum: number) => {
+  const fetchTasks = React.useCallback(async (pageNum: number) => {
     setLoading(true);
     const response = await fetch(`/api/tasks?page=${pageNum}`);
     const data = await response.json();
@@ -56,11 +57,11 @@ export default function TaskList() {
     setTasks((prev) => [...prev, ...data.tasks]);
     setHasMore(data.hasMore);
     setLoading(false);
-  };
+  }, [page, hasMore])
 
   useEffect(() => {
     fetchTasks(page);
-  }, [page, loading, hasMore]);
+  }, [fetchTasks]);
 
   const handleLoadMore = () => {
     setPage(page + 1);
