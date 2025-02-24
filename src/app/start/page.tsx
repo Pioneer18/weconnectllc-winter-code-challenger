@@ -1,6 +1,6 @@
 "use client";
 
-import TaskList from "@/components/task-list";
+import TaskList from "@/components/task-list/task-list";
 
 export default function StartPage() {
   return (
