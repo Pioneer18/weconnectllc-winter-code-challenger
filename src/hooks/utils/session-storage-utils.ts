@@ -1,7 +1,5 @@
-import { Task } from "@/types/task";
+import { TASKS_KEY, PAGE_KEY } from "@/constants";
 
-const TASKS_KEY = 'TASKS';
-const PAGE_KEY = 'PAGE'
 const isBrowser = typeof window != 'undefined';
 
 // Type specific fallback now passed to the generic getter

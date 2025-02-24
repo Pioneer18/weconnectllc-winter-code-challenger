@@ -1,8 +1,7 @@
 import { Task, TaskStateManagerProps } from "@/types/task";
 import { useCallback, useEffect, useState } from "react";
 import { getSessionStorage, setSessionStorage } from "./utils/session-storage-utils";
-const TASKS_KEY = 'TASKS';
-const PAGE_KEY = 'PAGE'
+import { TASKS_KEY, PAGE_KEY } from "@/constants";
 
 const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskStateManagerProps => {
     // multiple stateful values are still being used instead of single object
@@ -24,8 +23,11 @@ const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskSta
             const response = await fetch(`/api/tasks?page=${pageNum}`);
             const data = await response.json();
 
-            setTasks((prev) => [...prev, ...data.tasks]);
-            setSessionStorage(TASKS_KEY, tasks) // is this being updated correctly?
+            setTasks((prev) => {
+                const update = [...prev, ...data.tasks];
+                setSessionStorage(TASKS_KEY, update);
+                return update;
+            })
 
             setHasMore(data.hasMore);
         } catch (e) {
