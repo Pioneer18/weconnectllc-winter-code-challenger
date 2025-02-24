@@ -5,6 +5,14 @@ import { useCallback, useEffect, useState } from "react";
 import { getSessionStorage, setSessionStorage } from "./utils/session-storage-utils";
 import { TASKS_KEY, PAGE_KEY } from "@/constants";
 
+type Action = 
+    | {type: 'FETCHING_TASKS_INIT'} // loading true, 
+    | {type: 'FETCHING_TASKS_FAILURE'} // error true
+    | {type: 'FETCHING_TASKS_SUCCESS'} // loading false, page,tasks, and has more updated, error false
+
+const tasksReducer = (state: TaskStateManagerProps, action: Action) => {
+}
+
 const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskStateManagerProps => {
     // multiple stateful values are still being used instead of single object
     // useReducer "makes sense as soon as multiple stateful values are dependent on each other or related to one domain"
