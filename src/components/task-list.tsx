@@ -76,19 +76,21 @@ export default function TaskList() {
 
   return (
     <TaskErrorBoundary>
-      <div className="space-y-4">
-        {tasks.map((task) => (
-          <TaskItem key={task.id} task={task} />
-        ))}
-        {loading || hasMore == false ? null :
-          <button
-            onClick={handleLoadMore}
-            className="w-full p-4 text-center text-gray-600 hover:text-gray-900"
-          >
-            Load more tasks
-          </button>
-        }
-      </div>
+      {loading ? LoadingState() : 
+        <div className="space-y-4">
+          {tasks.map((task) => (
+            <TaskItem key={task.id} task={task} />
+          ))}
+          {hasMore == false ? null :
+            <button
+              onClick={handleLoadMore}
+              className="w-full p-4 text-center text-gray-600 hover:text-gray-900"
+            >
+              Load more tasks
+            </button>
+          }
+        </div>
+      }
     </TaskErrorBoundary>
   );
 }
