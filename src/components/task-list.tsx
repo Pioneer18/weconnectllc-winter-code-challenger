@@ -60,8 +60,9 @@ export default function TaskList() {
       setHasMore(data.hasMore);
     } catch (e) {
       setError(`Fetch tasks error: ${e}`);
+    } finally {
+      setLoading(false)
     }
-    setLoading(false);
   }, [page])
 
   // note: This fires twice if the start button is selected from the app page,
@@ -76,21 +77,20 @@ export default function TaskList() {
 
   return (
     <TaskErrorBoundary>
-      {loading ? LoadingState() : 
-        <div className="space-y-4">
-          {tasks.map((task) => (
-            <TaskItem key={task.id} task={task} />
-          ))}
-          {hasMore == false ? null :
-            <button
-              onClick={handleLoadMore}
-              className="w-full p-4 text-center text-gray-600 hover:text-gray-900"
-            >
-              Load more tasks
-            </button>
-          }
-        </div>
-      }
+      <div className="space-y-4">
+        {tasks.map((task) => (
+          <TaskItem key={task.id} task={task} />
+        ))}
+        {loading ? LoadingState() : null}
+        {loading || hasMore == false ? null :
+          <button
+            onClick={handleLoadMore}
+            className="w-full p-4 text-center text-gray-600 hover:text-gray-900"
+          >
+            Load more tasks
+          </button>
+        }
+      </div>
     </TaskErrorBoundary>
   );
 }
