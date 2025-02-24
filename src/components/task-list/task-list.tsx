@@ -7,9 +7,13 @@ import TaskErrorBoundary from "../error-handling/task-error-boundary";
 import LoadingState from "./task-list-loading";
 import React from "react";
 
-
-// todo: there are a lot of useState calls lined up, this should be reduced and customized
 export default function TaskList() {
+  /**
+   * useTaskListState
+   * @return [tasks, loading, hasMore, page, error]
+   * usage:
+   * 
+   */
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -32,6 +36,8 @@ export default function TaskList() {
       setLoading(false);
     }
   }, [page]);
+
+  // const [tasks, loading, hasMore, page, error] = useTaskListState
 
   // note: This fires twice if the start button is selected from the app page,
   // works fine on page refresh or manually entering the url
