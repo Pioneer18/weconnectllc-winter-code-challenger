@@ -3,4 +3,13 @@ export interface Task {
   title: string;
   completed: boolean;
   description: string;
-}
+};
+
+export type TaskStateManagerProps = [
+  boolean,
+  boolean,
+  string | null,
+  Task[],
+  number,
+  (val: number) => void
+];

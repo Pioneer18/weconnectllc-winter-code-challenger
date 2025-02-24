@@ -7,13 +7,7 @@ import React from "react";
 import useTaskStateManager from "@/hooks/use-task-state-manager";
 
 export default function TaskList() {
-  /**
-   * useTaskListState
-   * @return [tasks, page, loading, hasMore, error]
-   * usage:
-   * 
-   */
-  const [loading, hasMore, error, tasks, page, setPage] = useTaskStateManager();
+  const [loading, hasMore, error, tasks, page, setPage] = useTaskStateManager([], 1);
 
   const handleLoadMore = () => {
     setPage(page + 1);
