@@ -11,7 +11,6 @@ export interface TaskStateManagerProps {
   error: string | null,
   tasks: Task[],
   page: number,
-  setPage: (val: number) => void // is this correct way to update?
 }
 
 export type TaskStateManagerReturn = [
@@ -20,5 +19,4 @@ export type TaskStateManagerReturn = [
   string | null,
   Task[],
   number,
-  (val: number) => void
 ];
