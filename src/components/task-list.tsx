@@ -29,6 +29,10 @@ class TaskErrorBoundary extends Component<
     return { hasError: true };
   }
 
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+    console.error(error, errorInfo);
+  }
+
   render() {
     if (this.state.hasError) {
       return (
@@ -43,6 +47,7 @@ class TaskErrorBoundary extends Component<
 }
 
 export default function TaskList() {
+  // use a custom hook for managing the state, 
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -53,6 +58,8 @@ export default function TaskList() {
   const fetchTasks = React.useCallback(async (pageNum: number) => {
     try {
       setLoading(true);
+      setError(null);
+
       const response = await fetch(`/api/tasks?page=${pageNum}`);
       const data = await response.json();
 
@@ -61,15 +68,15 @@ export default function TaskList() {
     } catch (e) {
       setError(`Fetch tasks error: ${e}`);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [page])
+  }, [page]);
 
   // note: This fires twice if the start button is selected from the app page,
   // works fine on page refresh or manually entering the url
   useEffect(() => {
     fetchTasks(page);
-  }, [fetchTasks, page]);
+  }, [fetchTasks]);
 
   const handleLoadMore = () => {
     setPage(page + 1);
@@ -78,14 +85,15 @@ export default function TaskList() {
   return (
     <TaskErrorBoundary>
       <div className="space-y-4">
+        { error && <div>{error}</div>}
         {tasks.map((task) => (
           <TaskItem key={task.id} task={task} />
         ))}
-        {loading ? LoadingState() : null}
-        {loading || hasMore == false ? null :
+        {loading && <LoadingState />}
+        {loading && !hasMore &&
           <button
             onClick={handleLoadMore}
-            className="w-full p-4 text-center text-gray-600 hover:text-gray-900"
+            className="w-full p-4 text-center font-bold text-gray-600 hover:text-gray-900"
           >
             Load more tasks
           </button>
