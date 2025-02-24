@@ -13,7 +13,7 @@ export default function StartPage() {
           </h1>
           <p className="text-lg max-w-[600px] text-gray-600 dark:text-gray-300">
             This technical assessment evaluates your debugging and
-            problem-solving abilities in a Next.js application. You'll need to
+            problem-solving abilities in a Next.js application. You&apos;ll need to
             identify and resolve issues in both component architecture and API
             implementation.
           </p>

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Task } from "@/types/task";
 
-let tasks: Task[] = Array.from({ length: 50 }, (_, index) => ({
+const tasks: Task[] = Array.from({ length: 50 }, (_, index) => ({
   id: index + 1,
   title: `Task ${index + 1}`,
   completed: Math.random() > 0.5,

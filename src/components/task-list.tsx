@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, memo, Component } from "react";
+import { useEffect, useState, Component } from "react";
 import { Task } from "@/types/task";
 import TaskItem from "./task-item";
 import React from "react";
@@ -49,19 +49,26 @@ export default function TaskList() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
+  // memoize fetchTasks and only recreate if page has changed
   const fetchTasks = React.useCallback(async (pageNum: number) => {
-    setLoading(true);
-    const response = await fetch(`/api/tasks?page=${pageNum}`);
-    const data = await response.json();
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/tasks?page=${pageNum}`);
+      const data = await response.json();
 
-    setTasks((prev) => [...prev, ...data.tasks]);
-    setHasMore(data.hasMore);
+      setTasks((prev) => [...prev, ...data.tasks]);
+      setHasMore(data.hasMore);
+    } catch (e) {
+      setError(`Fetch tasks error: ${e}`);
+    }
     setLoading(false);
-  }, [page, hasMore])
+  }, [page])
 
+  // note: This fires twice if the start button is selected from the app page,
+  // works fine on page refresh or manually entering the url
   useEffect(() => {
     fetchTasks(page);
-  }, [fetchTasks]);
+  }, [fetchTasks, page]);
 
   const handleLoadMore = () => {
     setPage(page + 1);
@@ -73,13 +80,14 @@ export default function TaskList() {
         {tasks.map((task) => (
           <TaskItem key={task.id} task={task} />
         ))}
-
-        <button
-          onClick={handleLoadMore}
-          className="w-full p-4 text-center text-gray-600 hover:text-gray-900"
-        >
-          Load more tasks
-        </button>
+        {loading || hasMore == false ? null :
+          <button
+            onClick={handleLoadMore}
+            className="w-full p-4 text-center text-gray-600 hover:text-gray-900"
+          >
+            Load more tasks
+          </button>
+        }
       </div>
     </TaskErrorBoundary>
   );
