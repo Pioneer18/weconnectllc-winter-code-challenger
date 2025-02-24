@@ -1,4 +1,3 @@
-"use-client";
 
 import { Task, TaskStateManagerProps, TaskStateManagerReturn } from "@/types/task";
 import { useCallback, useEffect, useReducer, useState } from "react";
@@ -20,10 +19,10 @@ const tasksReducer = (state: TaskStateManagerProps, action: Action) => {
                 error: null,
             }
         case 'FETCHING_TASKS_SUCCESS':
-            // sessionStorage only updated on success!
+            // sessionStorage only updated on success!)
             const updatedTasks = [...state.tasks, ...action.tasks];
-            setSessionStorage(TASKS_KEY, updatedTasks);
-            setSessionStorage(PAGE_KEY, action.page);
+            // setSessionStorage(TASKS_KEY, updatedTasks);
+            // setSessionStorage(PAGE_KEY, action.page);
 
             return {
                 ...state,
@@ -44,16 +43,15 @@ const tasksReducer = (state: TaskStateManagerProps, action: Action) => {
     }
 }
 
+// need a state updater for the page!
+const nextPage = (prevPage: number) => {
+    return prevPage += prevPage + 1;
+}
+
 const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskStateManagerReturn => {
-    // multiple stateful values are still being used instead of single object
-    // useReducer "makes sense as soon as multiple stateful values are dependent on each other or related to one domain"
-
-    const [tasks, setTasks] = useState<Task[]>(() => getSessionStorage(TASKS_KEY, initialTasks));
-    const [page, setPage] = useState<number>(() => getSessionStorage(PAGE_KEY, initialPage));
-
     const [state, dispatch] = useReducer(tasksReducer, {
-        tasks: getSessionStorage(TASKS_KEY, initialTasks),
-        page: getSessionStorage(PAGE_KEY, initialPage),
+        tasks: initialTasks,//getSessionStorage(TASKS_KEY, initialTasks),
+        page: initialPage, //getSessionStorage(PAGE_KEY, initialPage),
         loading: false,
         error: null,
         hasMore: true,
@@ -68,7 +66,7 @@ const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskSta
 
             dispatch({
                 type: 'FETCHING_TASKS_SUCCESS',
-                tasks: latestTasks,
+                tasks: latestTasks.tasks,
                 page: pageNum,
                 hasMore: latestTasks.hasMore
             })
@@ -88,6 +86,7 @@ const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskSta
         state.error,
         state.tasks,
         state.page,
+        nextPage,
     ];
 }
 

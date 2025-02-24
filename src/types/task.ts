@@ -19,4 +19,5 @@ export type TaskStateManagerReturn = [
   string | null,
   Task[],
   number,
+  (prevPage: number) => number
 ];
