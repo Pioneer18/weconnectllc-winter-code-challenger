@@ -1,3 +1,5 @@
+"use-client";
+
 import { Task, TaskStateManagerProps } from "@/types/task";
 import { useCallback, useEffect, useState } from "react";
 import { getSessionStorage, setSessionStorage } from "./utils/session-storage-utils";
