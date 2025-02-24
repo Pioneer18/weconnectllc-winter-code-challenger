@@ -1,49 +1,19 @@
 "use client";
 
-import { useEffect, useState, Component } from "react";
-import { Task } from "@/types/task";
 import TaskItem from "../task-item/task-item";
 import TaskErrorBoundary from "../error-handling/task-error-boundary";
 import LoadingState from "./task-list-loading";
 import React from "react";
+import useTaskStateManager from "@/hooks/use-task-state-manager";
 
 export default function TaskList() {
   /**
    * useTaskListState
-   * @return [tasks, loading, hasMore, page, error]
+   * @return [tasks, page, loading, hasMore, error]
    * usage:
    * 
    */
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-
-  const fetchTasks = React.useCallback(async (pageNum: number) => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const response = await fetch(`/api/tasks?page=${pageNum}`);
-      const data = await response.json();
-
-      setTasks((prev) => [...prev, ...data.tasks]);
-      setHasMore(data.hasMore);
-    } catch (e) {
-      setError(`Fetch tasks error: ${e}`);
-    } finally {
-      setLoading(false);
-    }
-  }, [page]);
-
-  // const [tasks, loading, hasMore, page, error] = useTaskListState
-
-  // note: This fires twice if the start button is selected from the app page,
-  // works fine on page refresh or manually entering the url
-  useEffect(() => {
-    fetchTasks(page);
-  }, [fetchTasks]);
+  const [loading, hasMore, error, tasks, page, setPage] = useTaskStateManager();
 
   const handleLoadMore = () => {
     setPage(page + 1);
