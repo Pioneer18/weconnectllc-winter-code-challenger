@@ -1,19 +1,43 @@
 "use-client";
 
-import { Task, TaskStateManagerProps } from "@/types/task";
+import { Task, TaskStateManagerProps, TaskStateManagerReturn } from "@/types/task";
 import { useCallback, useEffect, useState } from "react";
 import { getSessionStorage, setSessionStorage } from "./utils/session-storage-utils";
 import { TASKS_KEY, PAGE_KEY } from "@/constants";
 
 type Action = 
-    | {type: 'FETCHING_TASKS_INIT'} // loading true, 
-    | {type: 'FETCHING_TASKS_FAILURE'} // error true
-    | {type: 'FETCHING_TASKS_SUCCESS'} // loading false, page,tasks, and has more updated, error false
+    | {type: 'FETCHING_TASKS_INIT'}
+    | {type: 'FETCHING_TASKS_FAILURE'; error: string }
+    | {type: 'FETCHING_TASKS_SUCCESS'; tasks: Task[]; page: number, hasMore: boolean}
 
+    // state is updated based on given state and action
 const tasksReducer = (state: TaskStateManagerProps, action: Action) => {
+    switch (action.type) {
+        case 'FETCHING_TASKS_INIT':
+            return {
+                ...state,
+                loading: true,
+                error: null,
+            }
+        case 'FETCHING_TASKS_SUCCESS':
+            return {
+                ...state,
+                loading: false,
+                error: null,
+                tasks: action.tasks,
+                page: action.page,
+                hasMore: action.hasMore,
+            }
+        case 'FETCHING_TASKS_FAILURE':
+            return {
+                ...state,
+                loading: false,
+                error: action.error
+            }
+    }
 }
 
-const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskStateManagerProps => {
+const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskStateManagerReturn => {
     // multiple stateful values are still being used instead of single object
     // useReducer "makes sense as soon as multiple stateful values are dependent on each other or related to one domain"
 
