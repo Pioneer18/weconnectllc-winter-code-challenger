@@ -10,7 +10,7 @@ export default function TaskList() {
   const [loading, hasMore, error, tasks, page, setPage] = useTaskStateManager([], 1);
 
   const handleLoadMore = () => {
-    setPage((prevPage) => prevPage + 1);
+    setPage(page + 1)
   };
 
   return (

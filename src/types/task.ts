@@ -11,5 +11,6 @@ export type TaskStateManagerProps = [
   string | null,
   Task[],
   number,
-  (val: (prevPage: number) => number) => void
+  (val: number) => void
+  // (val: (prevPage: number) => number) => void
 ];
