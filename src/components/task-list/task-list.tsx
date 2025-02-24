@@ -10,7 +10,7 @@ export default function TaskList() {
   const [loading, hasMore, error, tasks, page, setPage] = useTaskStateManager([], 1);
 
   const handleLoadMore = () => {
-    setPage(page + 1);
+    setPage((prevPage) => prevPage + 1);
   };
 
   return (
@@ -23,7 +23,7 @@ export default function TaskList() {
         {loading && <LoadingState />}
         {!loading && hasMore &&
           <button
-            onClick={handleLoadMore}
+          onClick={handleLoadMore}
             className="w-full p-4 text-center font-bold text-gray-600 hover:text-gray-900"
           >
             Load more tasks
