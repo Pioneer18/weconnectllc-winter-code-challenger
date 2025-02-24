@@ -4,18 +4,9 @@ import { useEffect, useState, Component } from "react";
 import { Task } from "@/types/task";
 import TaskItem from "../task-item/task-item";
 import TaskErrorBoundary from "../error-handling/task-error-boundary";
+import LoadingState from "./task-list-loading";
 import React from "react";
 
-const LoadingState = () => (
-  <div className="space-y-4">
-    {[...Array(3)].map((_, i) => (
-      <div
-        key={i}
-        className="h-24 rounded-lg animate-pulse bg-gray-200 dark:bg-gray-700"
-      />
-    ))}
-  </div>
-);
 
 // todo: there are a lot of useState calls lined up, this should be reduced and customized
 export default function TaskList() {
