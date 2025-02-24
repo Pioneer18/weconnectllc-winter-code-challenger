@@ -1,7 +1,7 @@
 "use-client";
 
 import { Task, TaskStateManagerProps, TaskStateManagerReturn } from "@/types/task";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
 import { getSessionStorage, setSessionStorage } from "./utils/session-storage-utils";
 import { TASKS_KEY, PAGE_KEY } from "@/constants";
 
@@ -11,7 +11,7 @@ type Action =
     | {type: 'FETCHING_TASKS_SUCCESS'; tasks: Task[]; page: number, hasMore: boolean}
 
     // state is updated based on given state and action
-const tasksReducer = (state: TaskStateManagerProps, action: Action) => {
+const tasksReducer = (state: TaskStateManagerProps, action: Action): TaskStateManagerProps => {
     switch (action.type) {
         case 'FETCHING_TASKS_INIT':
             return {
@@ -20,6 +20,10 @@ const tasksReducer = (state: TaskStateManagerProps, action: Action) => {
                 error: null,
             }
         case 'FETCHING_TASKS_SUCCESS':
+            const updatedTasks = [...state.tasks, ...action.tasks];
+            setSessionStorage(TASKS_KEY, updatedTasks);
+            setSessionStorage(PAGE_KEY, action.page);
+            
             return {
                 ...state,
                 loading: false,
@@ -34,6 +38,8 @@ const tasksReducer = (state: TaskStateManagerProps, action: Action) => {
                 loading: false,
                 error: action.error
             }
+        default:
+            return state;
     }
 }
 
@@ -47,6 +53,14 @@ const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskSta
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [hasMore, setHasMore] = useState(true);
+
+    // const [state, dispatch] = useReducer(tasksReducer, {
+    //     tasks: getSessionStorage(TASKS_KEY, initialTasks),
+    //     page: getSessionStorage(PAGE_KEY, initialPage),
+    //     loading: false,
+    //     error: null,
+    //     hasMore: true,
+    // });
 
     const fetchTasks = useCallback(async (pageNum: number) => {
         try {
