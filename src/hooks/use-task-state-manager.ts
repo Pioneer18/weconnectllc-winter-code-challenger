@@ -5,6 +5,7 @@ import { getSessionStorage, setSessionStorage } from "./utils/session-storage-ut
 import { TASKS_KEY, PAGE_KEY } from "@/constants";
 
 type Action =
+    | { type: 'LOAD_SESSION_STATE'; tasks: Task[], page: number}
     | { type: 'INCREMENT_PAGE'; page: number }
     | { type: 'FETCHING_TASKS_INIT' }
     | { type: 'FETCHING_TASKS_FAILURE'; error: string }
@@ -13,6 +14,12 @@ type Action =
 // state is updated based on given state and action
 const tasksReducer = (state: TaskStateManagerProps, action: Action) => {
     switch (action.type) {
+        case 'LOAD_SESSION_STATE':
+            return {
+                ...state,
+                tasks: action.tasks,
+                page: action.page,
+            }
         case 'INCREMENT_PAGE':
             return {
                 ...state,
@@ -51,12 +58,21 @@ const tasksReducer = (state: TaskStateManagerProps, action: Action) => {
 
 const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskStateManagerReturn => {
     const [state, dispatch] = useReducer(tasksReducer, {
-        tasks: initialTasks,//getSessionStorage(TASKS_KEY, initialTasks),
-        page: initialPage, //getSessionStorage(PAGE_KEY, initialPage),
+        tasks: initialTasks,
+        page: initialPage,
         loading: false,
         error: null,
         hasMore: true,
     });
+
+    // don't prematurely attempt to access sessionStorage 
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const storedTasks = getSessionStorage(TASKS_KEY, initialTasks);
+            const storedPage = getSessionStorage(PAGE_KEY, initialPage);
+            dispatch({ type: 'LOAD_SESSION_STATE', tasks: storedTasks, page: storedPage });
+        }
+    }, []);
 
     const fetchTasks = useCallback(async (pageNum: number) => {
         try {
