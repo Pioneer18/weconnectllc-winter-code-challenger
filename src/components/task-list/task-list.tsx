@@ -8,17 +8,11 @@ import useTaskStateManager from "@/hooks/use-task-state-manager";
 import { TaskError } from "../error-handling/task-error-alert";
 
 export default function TaskList() {
-  const [pageSize, setPageSize] = useState(5);
-  const [loading, hasMore, error, tasks, nextPage] = useTaskStateManager([], 1, pageSize);
+  const [loading, hasMore, error, tasks, nextPage] = useTaskStateManager([], 1);
 
   const handleLoadMore = () => {
     nextPage();
   };
-
-  const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newPageSize = parseInt(e.target.value);
-    setPageSize(newPageSize);
-  }
 
   return (
     <TaskErrorBoundary>
@@ -41,19 +35,6 @@ export default function TaskList() {
             Load more tasks
           </button>
         }
-
-        <div className="flex items-center space-x-2">
-          <label >Choose Number of Tasks to load</label>
-          <select 
-            className="w-1/10 p-2 border rounded"
-            value={pageSize}
-            onChange={handlePageSizeChange}
-          >
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={25}>25</option>
-          </select>
-        </div>
       </div>
     </TaskErrorBoundary>
   );

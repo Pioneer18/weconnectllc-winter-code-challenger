@@ -7,7 +7,7 @@ interface TaskItemProps {
   task: Task;
 }
 
-export const TaskItem = memo(({ task }: TaskItemProps) => {
+const TaskItem = memo(({ task }: TaskItemProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -39,3 +39,7 @@ export const TaskItem = memo(({ task }: TaskItemProps) => {
     </div>
   );
 });
+
+TaskItem.displayName = "TaskItem";
+
+export { TaskItem };
