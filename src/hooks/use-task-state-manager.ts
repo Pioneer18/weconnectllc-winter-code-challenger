@@ -5,13 +5,19 @@ import { getSessionStorage, setSessionStorage } from "./utils/session-storage-ut
 import { TASKS_KEY, PAGE_KEY } from "@/constants";
 
 type Action =
+    | { type: 'INCREMENT_PAGE'; page: number }
     | { type: 'FETCHING_TASKS_INIT' }
     | { type: 'FETCHING_TASKS_FAILURE'; error: string }
-    | { type: 'FETCHING_TASKS_SUCCESS'; tasks: Task[]; page: number, hasMore: boolean }
+    | { type: 'FETCHING_TASKS_SUCCESS'; tasks: Task[]; hasMore: boolean } // why page?
 
 // state is updated based on given state and action
 const tasksReducer = (state: TaskStateManagerProps, action: Action) => {
     switch (action.type) {
+        case 'INCREMENT_PAGE':
+            return {
+                ...state,
+                page: action.page,
+            }
         case 'FETCHING_TASKS_INIT':
             return {
                 ...state,
@@ -29,7 +35,6 @@ const tasksReducer = (state: TaskStateManagerProps, action: Action) => {
                 loading: false,
                 error: null,
                 tasks: updatedTasks,
-                page: action.page,
                 hasMore: action.hasMore,
             }
         case 'FETCHING_TASKS_FAILURE':
@@ -41,11 +46,6 @@ const tasksReducer = (state: TaskStateManagerProps, action: Action) => {
         default:
             return state;
     }
-}
-
-// need a state updater for the page!
-const nextPage = (prevPage: number) => {
-    return prevPage += prevPage + 1;
 }
 
 const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskStateManagerReturn => {
@@ -67,7 +67,6 @@ const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskSta
             dispatch({
                 type: 'FETCHING_TASKS_SUCCESS',
                 tasks: latestTasks.tasks,
-                page: pageNum,
                 hasMore: latestTasks.hasMore
             })
         } catch (e) {
@@ -79,6 +78,13 @@ const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskSta
     useEffect(() => {
         fetchTasks(state.page);
     }, [fetchTasks]);
+
+
+    // need a state updater for the page!
+    const nextPage = (prevPage: number) => {
+        prevPage += 1;
+        dispatch({type: 'INCREMENT_PAGE', page: prevPage})
+    };
 
     return [
         state.loading,
