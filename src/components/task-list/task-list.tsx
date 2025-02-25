@@ -3,7 +3,7 @@
 import { TaskItem } from "../task-item/task-item";
 import TaskErrorBoundary from "../error-handling/task-error-boundary";
 import LoadingState from "./task-list-loading";
-import React, { useState } from "react";
+import React from "react";
 import useTaskStateManager from "@/hooks/use-task-state-manager";
 import { TaskError } from "../error-handling/task-error-alert";
 
