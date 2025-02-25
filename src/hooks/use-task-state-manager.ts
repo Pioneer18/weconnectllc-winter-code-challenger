@@ -97,8 +97,8 @@ const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskSta
                 const latestTasks: FetchTasksResponse = await response.json();
                 dispatch({
                     type: 'FETCHING_TASKS_SUCCESS',
-                    tasks: latestTasks.result.tasks,
-                    hasMore: latestTasks.result.hasMore
+                    tasks: latestTasks.tasks,
+                    hasMore: latestTasks.hasMore
                 })
             } catch (e) {
                 // needs to be displayed, could lead to glitch

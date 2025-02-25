@@ -21,11 +21,9 @@ const getPaginatedTasks = (page: number, pageSize: number): FetchTasksResponse =
   const allTasks = getTasks();
 
   return {
-    result: {
       tasks: allTasks.slice(startIndex, endIndex),
       hasMore: endIndex < allTasks.length,}
   };
-};
 
 const getPageParam = (searchParams: URLSearchParams): number => {
   const page = parseInt(searchParams.get("page") || "1");
@@ -50,7 +48,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const pageSize = getPageSizeParam(searchParams);
 
     const result = getPaginatedTasks(page, pageSize);
-    return NextResponse.json({result}, {status: 200});
+    return NextResponse.json(result);
   } catch (error) {
     console.error(`Error: GET ${request.url}, ${error}`);
     if (error instanceof Error) {
@@ -85,17 +83,17 @@ export async function POST(request: NextRequest) {
 // PUT 
 export async function PUT(request: NextRequest) {
   try {
-
+    console.log(request);
   } catch (e) {
-    
+    console.log(e);
   }
 }
 
 // DELETE
 export async function DELETE(request: NextRequest) {
   try {
-
+    console.log(request);
   } catch (e) {
-    
+    console.log(e);
   }
 }
