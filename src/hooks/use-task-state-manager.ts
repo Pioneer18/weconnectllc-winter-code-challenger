@@ -3,7 +3,7 @@
 import { FetchTasksResponse, Task, TaskStateManagerProps, TaskStateManagerReturn } from "@/types/task";
 import { useCallback, useEffect, useReducer, useState } from "react";
 import { getSessionStorage, setSessionStorage } from "./utils/session-storage-utils";
-import { TASKS_KEY, PAGE_KEY, PAGE_SIZE } from "@/constants";
+import { TASKS_KEY, PAGE_KEY} from "@/constants";
 
 type Action =
     | { type: 'LOAD_SESSION_STATE'; tasks: Task[], page: number }
@@ -62,7 +62,7 @@ const tasksReducer = (state: TaskStateManagerProps, action: Action): TaskStateMa
     }
 }
 
-const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskStateManagerReturn => {
+const useTaskStateManager = (initialTasks: Task[], initialPage: number, pageSize: number): TaskStateManagerReturn => {
     const [state, dispatch] = useReducer(tasksReducer, {
         tasks: initialTasks,
         page: initialPage,
@@ -113,7 +113,7 @@ const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskSta
 
     useEffect((): void => {
         if (shouldFetch) {
-            fetchTasks(state.page, PAGE_SIZE);
+            fetchTasks(state.page, pageSize);
             setShouldFetch(false);
         }
     }, [state.page, shouldFetch, fetchTasks]);
