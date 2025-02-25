@@ -17,8 +17,8 @@ export interface TaskStateManagerProps {
 }
 
 export interface FetchTasksResponse {
-  tasks: Task[],
   hasMore: boolean;
+  tasks: Task[],
 }
 
 /**

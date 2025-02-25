@@ -21,10 +21,9 @@ const getPaginatedTasks = (page: number, pageSize: number): FetchTasksResponse =
   const allTasks = getTasks();
 
   return {
-    tasks: allTasks.slice(startIndex, endIndex),
-    hasMore: endIndex < allTasks.length,
+      tasks: allTasks.slice(startIndex, endIndex),
+      hasMore: endIndex < allTasks.length,}
   };
-};
 
 const getPageParam = (searchParams: URLSearchParams): number => {
   const page = parseInt(searchParams.get("page") || "1");
@@ -60,5 +59,41 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 }
 
 // POST
+export async function POST(request: NextRequest) {
+  try {
+    const dto = await request.json();
+    const newTask: Task = {
+      id: tasks.length + 1, // next task index
+      title: dto.title,
+      completed: dto.completed, 
+      description: dto.description,
+    }
+
+    tasks.push(newTask);
+    return NextResponse.json({newTask}, {status: 201})
+  } catch (error) {
+    console.error(`Error: POST ${request.url}, ${error}`);
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+    return NextResponse.json({ error: "An unexpected Server error occurred" }, { status: 500 });
+  }
+}
+
 // PUT 
+export async function PUT(request: NextRequest) {
+  try {
+    console.log(request);
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 // DELETE
+export async function DELETE(request: NextRequest) {
+  try {
+    console.log(request);
+  } catch (e) {
+    console.log(e);
+  }
+}
