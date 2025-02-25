@@ -20,3 +20,8 @@ export type TaskStateManagerReturn = [
   Task[],
   () => void
 ];
+
+export interface PaginatedTasks {
+  tasks: Task[];
+  hasMore: boolean;
+}

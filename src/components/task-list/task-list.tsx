@@ -15,7 +15,7 @@ export default function TaskList() {
   };
 
   return (
-    <TaskErrorBoundary> {/* confirm this is being implemented */}
+    <TaskErrorBoundary>
       <div className="space-y-4">
         {error &&
           <TaskError error={error} />

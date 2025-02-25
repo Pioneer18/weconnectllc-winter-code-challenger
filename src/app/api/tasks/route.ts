@@ -18,9 +18,9 @@
 // the README specifies that this file does have issues
 
 import { NextRequest, NextResponse } from "next/server";
-import { Task } from "@/types/task";
+import { PaginatedTasks, Task } from "@/types/task";
 
-// should this be persisted in storage? Or is this just an example?
+// this should be a databse query, but ok for challenge?
 const tasks: Task[] = Array.from({ length: 50 }, (_, index) => ({
   id: index + 1,
   title: `Task ${index + 1}`,
@@ -28,14 +28,13 @@ const tasks: Task[] = Array.from({ length: 50 }, (_, index) => ({
   description: `This is a detailed description for task ${index + 1}`,
 }));
 
-const getTasks = () => {
+const getTasks = (): Task[] => {
   return tasks.map((task) => ({
-    ...task,
-    completed: task.completed, // why is the completed property updated here if it's just getting tasks?
+    ...task
   }));
 };
 
-const getPaginatedTasks = (page: number, pageSize: number) => {
+const getPaginatedTasks = (page: number, pageSize: number): PaginatedTasks => {
   const startIndex = (page - 1) * pageSize;
   const endIndex = startIndex + pageSize;
   const allTasks = getTasks();
@@ -46,7 +45,7 @@ const getPaginatedTasks = (page: number, pageSize: number) => {
   };
 };
 
-const getPageParam = (searchParams: URLSearchParams) => {
+const getPageParam = (searchParams: URLSearchParams): number => {
   // should there be more validation on page?
   const page = parseInt(searchParams.get("page") || "1");
   if (isNaN(page) || page < 1) {
@@ -55,11 +54,11 @@ const getPageParam = (searchParams: URLSearchParams) => {
   return page;
 };
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const { searchParams } = new URL(request.url);
     const page = getPageParam(searchParams);
-    const pageSize = 5;
+    const pageSize = 5; // this shuoldn't be hardcoded?
 
     const result = getPaginatedTasks(page, pageSize);
     return NextResponse.json(result);
