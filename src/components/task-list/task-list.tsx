@@ -1,6 +1,6 @@
 "use client";
 
-import TaskItem from "../task-item/task-item";
+import { TaskItem } from "../task-item/task-item";
 import TaskErrorBoundary from "../error-handling/task-error-boundary";
 import LoadingState from "./task-list-loading";
 import React from "react";
