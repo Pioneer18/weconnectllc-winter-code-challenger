@@ -9,7 +9,7 @@ type Action =
     | { type: 'LOAD_SESSION_STATE'; tasks: Task[], page: number }
     | { type: 'INCREMENT_PAGE' }
     | { type: 'FETCHING_TASKS_INIT' }
-    | { type: 'FETCHING_TASKS_SUCCESS'; tasks: Task[]; hasMore: boolean; } // why page?
+    | { type: 'FETCHING_TASKS_SUCCESS'; tasks: Task[]; hasMore: boolean; }
     | { type: 'ERROR'; error: string; }
 
 const tasksReducer = (state: TaskStateManagerProps, action: Action): TaskStateManagerProps => {

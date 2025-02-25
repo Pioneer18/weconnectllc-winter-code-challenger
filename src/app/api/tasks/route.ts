@@ -1,22 +1,3 @@
-/**
- * Are there problem somewhere in this file?
- * 1. data persistence: currently tasks are stored in the browser's sessionStorage, should server persist tasks?
- * 2. data mutation:
- * 3. input validation
- * - prevent negative numbers and non-numeric values
- * - page parameter needs validation
- * 4. pagination: 
- * - page size handling?
- * - incorrect pagination calculation
- * - taks are being skipped or duplicated
- * 5. Error Handling
- * - Implement proper status codes
- * - Add meaningful error messages
- * - Improve client-side error handling
- */
-
-// the README specifies that this file does have issues
-
 import { NextRequest, NextResponse } from "next/server";
 import { FetchTasksResponse, Task } from "@/types/task";
 
@@ -71,3 +52,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: "An unexpected Server error occurred" }, { status: 500 });
   }
 }
+
+// POST
+// PUT 
+// DELETE
