@@ -93,8 +93,8 @@ const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskSta
 
         const response = await fetch(`/api/tasks?page=${pageNum}`);
         if (response.status === 200) {
-            const latestTasks = await response.json();
             try {
+                const latestTasks = await response.json();
                 dispatch({
                     type: 'FETCHING_TASKS_SUCCESS',
                     tasks: latestTasks.tasks,
