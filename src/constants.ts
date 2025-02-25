@@ -3,3 +3,4 @@
  */
 export const TASKS_KEY = 'TASKS';
 export const PAGE_KEY = 'PAGE'
+export const PAGE_SIZE = 5; 

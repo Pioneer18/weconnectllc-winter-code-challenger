@@ -3,7 +3,7 @@
 import { FetchTasksResponse, Task, TaskStateManagerProps, TaskStateManagerReturn } from "@/types/task";
 import { useCallback, useEffect, useReducer, useState } from "react";
 import { getSessionStorage, setSessionStorage } from "./utils/session-storage-utils";
-import { TASKS_KEY, PAGE_KEY } from "@/constants";
+import { TASKS_KEY, PAGE_KEY, PAGE_SIZE } from "@/constants";
 
 type Action =
     | { type: 'LOAD_SESSION_STATE'; tasks: Task[], page: number }
@@ -113,7 +113,7 @@ const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskSta
 
     useEffect((): void => {
         if (shouldFetch) {
-            fetchTasks(state.page, 5); // UI should provide user choice of pagesize
+            fetchTasks(state.page, PAGE_SIZE);
             setShouldFetch(false);
         }
     }, [state.page, shouldFetch, fetchTasks]);
