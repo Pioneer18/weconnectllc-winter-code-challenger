@@ -34,13 +34,19 @@ const getPageParam = (searchParams: URLSearchParams): number => {
   return page;
 };
 
+const getPageSizeParam = (searchParams: URLSearchParams): number => {
+  const pageSize = parseInt(searchParams.get("page_size") || "5");
+  if (isNaN(pageSize) || pageSize < 1) {
+    throw new Error("Invalid pageSize provided")
+  }
+  return pageSize;
+}
+
 export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const { searchParams } = new URL(request.url);
     const page = getPageParam(searchParams);
-    const pageSize = 5;
-
-    // get pagesize from URLSearchParams?
+    const pageSize = getPageSizeParam(searchParams);
 
     const result = getPaginatedTasks(page, pageSize);
     return NextResponse.json(result);
