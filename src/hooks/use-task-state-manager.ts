@@ -6,10 +6,10 @@ import { TASKS_KEY, PAGE_KEY } from "@/constants";
 
 type Action =
     | { type: 'LOAD_SESSION_STATE'; tasks: Task[], page: number}
-    | { type: 'INCREMENT_PAGE'; page: number }
+    | { type: 'INCREMENT_PAGE' }
     | { type: 'FETCHING_TASKS_INIT' }
-    | { type: 'FETCHING_TASKS_FAILURE'; error: string }
-    | { type: 'FETCHING_TASKS_SUCCESS'; tasks: Task[]; page: number, hasMore: boolean } // why page?
+    | { type: 'FETCHING_TASKS_FAILURE'; error: string; }
+    | { type: 'FETCHING_TASKS_SUCCESS'; tasks: Task[]; hasMore: boolean; } // why page?
 
 // state is updated based on given state and action
 const tasksReducer = (state: TaskStateManagerProps, action: Action) => {
@@ -20,10 +20,10 @@ const tasksReducer = (state: TaskStateManagerProps, action: Action) => {
                 tasks: action.tasks,
                 page: action.page,
             }
-        case 'INCREMENT_PAGE':
+        case 'INCREMENT_PAGE': // this is what leads to fetchTasks
             return {
                 ...state,
-                page: action.page,
+                page: state.page + 1,
             }
         case 'FETCHING_TASKS_INIT':
             return {
@@ -32,17 +32,16 @@ const tasksReducer = (state: TaskStateManagerProps, action: Action) => {
                 error: null,
             }
         case 'FETCHING_TASKS_SUCCESS':
-            // sessionStorage only updated on success!)
+            // sessionStorage only updated on success!)git 
             const updatedTasks = [...state.tasks, ...action.tasks];
             setSessionStorage(TASKS_KEY, updatedTasks);
-            setSessionStorage(PAGE_KEY, action.page);
+            setSessionStorage(PAGE_KEY, state.page); // this fires when state of page has been updated
 
             return {
                 ...state,
                 loading: false,
                 error: null,
                 tasks: updatedTasks,
-                page: action.page,
                 hasMore: action.hasMore,
             }
         case 'FETCHING_TASKS_FAILURE':
@@ -84,24 +83,24 @@ const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskSta
             dispatch({
                 type: 'FETCHING_TASKS_SUCCESS',
                 tasks: latestTasks.tasks,
-                page: pageNum,
                 hasMore: latestTasks.hasMore
             })
         } catch (e) {
             console.error(`Fetch tasks error: ${e}`);
             dispatch({ type: 'FETCHING_TASKS_FAILURE', error: `Fetching tasks failed: ${e}` });
         }
-    }, [state.page]);
+    }, []);
 
     useEffect(() => {
         fetchTasks(state.page);
-    }, [fetchTasks]);
+    }, [state.page]);
 
 
     // need a state updater for the page!
-    const nextPage = (prevPage: number) => {
-        prevPage += 1;
-        dispatch({type: 'INCREMENT_PAGE', page: prevPage})
+    const nextPage = () => {
+        console.log('incrementing page...')
+        dispatch({type: 'INCREMENT_PAGE' })
+        console.log(state.page);
     };
 
     return [
@@ -109,7 +108,6 @@ const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskSta
         state.hasMore,
         state.error,
         state.tasks,
-        state.page,
         nextPage,
     ];
 }

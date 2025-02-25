@@ -18,6 +18,5 @@ export type TaskStateManagerReturn = [
   boolean,
   string | null,
   Task[],
-  number,
-  (prevPage: number) => void
+  () => void
 ];
