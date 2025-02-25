@@ -3,7 +3,7 @@
 import { FetchTasksResponse, Task, TaskStateManagerProps, TaskStateManagerReturn } from "@/types/task";
 import { useCallback, useEffect, useReducer, useState } from "react";
 import { getSessionStorage, setSessionStorage } from "./utils/session-storage-utils";
-import { TASKS_KEY, PAGE_KEY } from "@/constants";
+import { TASKS_KEY, PAGE_KEY, PAGE_SIZE } from "@/constants";
 
 type Action =
     | { type: 'LOAD_SESSION_STATE'; tasks: Task[], page: number }
@@ -88,10 +88,10 @@ const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskSta
     }, []);
 
     // handles it's errors
-    const fetchTasks = useCallback(async (pageNum: number): Promise<void> => {
+    const fetchTasks = useCallback(async (pageNum: number, pageSize: number): Promise<void> => {
         dispatch({ type: 'FETCHING_TASKS_INIT' })
 
-        const response = await fetch(`/api/tasks?page=${pageNum}`);
+        const response = await fetch(`/api/tasks?page=${pageNum}&page_size=${pageSize}`);
         if (response.status === 200) {
             try {
                 const latestTasks: FetchTasksResponse = await response.json();
@@ -113,7 +113,7 @@ const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskSta
 
     useEffect((): void => {
         if (shouldFetch) {
-            fetchTasks(state.page);
+            fetchTasks(state.page, PAGE_SIZE);
             setShouldFetch(false);
         }
     }, [state.page, shouldFetch, fetchTasks]);

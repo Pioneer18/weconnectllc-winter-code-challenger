@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { memo, useState } from "react";
 import { Task } from "@/types/task";
 
 interface TaskItemProps {
   task: Task;
 }
 
-export default function TaskItem({ task }: TaskItemProps) {
+export const TaskItem = memo(({ task }: TaskItemProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -38,4 +38,4 @@ export default function TaskItem({ task }: TaskItemProps) {
       </button>
     </div>
   );
-}
+});
