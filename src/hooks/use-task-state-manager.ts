@@ -1,6 +1,6 @@
 
 import { Task, TaskStateManagerProps, TaskStateManagerReturn } from "@/types/task";
-import { useCallback, useEffect, useReducer, useState } from "react";
+import { useCallback, useEffect, useReducer} from "react";
 import { getSessionStorage, setSessionStorage } from "./utils/session-storage-utils";
 import { TASKS_KEY, PAGE_KEY } from "@/constants";
 
@@ -8,7 +8,7 @@ type Action =
     | { type: 'INCREMENT_PAGE'; page: number }
     | { type: 'FETCHING_TASKS_INIT' }
     | { type: 'FETCHING_TASKS_FAILURE'; error: string }
-    | { type: 'FETCHING_TASKS_SUCCESS'; tasks: Task[]; hasMore: boolean } // why page?
+    | { type: 'FETCHING_TASKS_SUCCESS'; tasks: Task[]; page: number, hasMore: boolean } // why page?
 
 // state is updated based on given state and action
 const tasksReducer = (state: TaskStateManagerProps, action: Action) => {
@@ -27,14 +27,15 @@ const tasksReducer = (state: TaskStateManagerProps, action: Action) => {
         case 'FETCHING_TASKS_SUCCESS':
             // sessionStorage only updated on success!)
             const updatedTasks = [...state.tasks, ...action.tasks];
-            // setSessionStorage(TASKS_KEY, updatedTasks);
-            // setSessionStorage(PAGE_KEY, action.page);
+            setSessionStorage(TASKS_KEY, updatedTasks);
+            setSessionStorage(PAGE_KEY, action.page);
 
             return {
                 ...state,
                 loading: false,
                 error: null,
                 tasks: updatedTasks,
+                page: action.page,
                 hasMore: action.hasMore,
             }
         case 'FETCHING_TASKS_FAILURE':
@@ -67,6 +68,7 @@ const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskSta
             dispatch({
                 type: 'FETCHING_TASKS_SUCCESS',
                 tasks: latestTasks.tasks,
+                page: pageNum,
                 hasMore: latestTasks.hasMore
             })
         } catch (e) {
