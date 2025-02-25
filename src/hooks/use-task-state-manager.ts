@@ -1,6 +1,6 @@
 "use-client"
 
-import { Task, TaskStateManagerProps, TaskStateManagerReturn } from "@/types/task";
+import { FetchTasksResponse, Task, TaskStateManagerProps, TaskStateManagerReturn } from "@/types/task";
 import { useCallback, useEffect, useReducer, useState } from "react";
 import { getSessionStorage, setSessionStorage } from "./utils/session-storage-utils";
 import { TASKS_KEY, PAGE_KEY } from "@/constants";
@@ -12,7 +12,7 @@ type Action =
     | { type: 'FETCHING_TASKS_SUCCESS'; tasks: Task[]; hasMore: boolean; } // why page?
     | { type: 'ERROR'; error: string; }
 
-const tasksReducer = (state: TaskStateManagerProps, action: Action) => {
+const tasksReducer = (state: TaskStateManagerProps, action: Action): TaskStateManagerProps => {
     switch (action.type) {
         case 'LOAD_SESSION_STATE':
             return {
@@ -29,7 +29,7 @@ const tasksReducer = (state: TaskStateManagerProps, action: Action) => {
             return {
                 ...state,
                 loading: true,
-                error: null,
+                error: undefined,
             }
         case 'FETCHING_TASKS_SUCCESS':
             // sessionStorage only updated on successful fetch
@@ -47,7 +47,7 @@ const tasksReducer = (state: TaskStateManagerProps, action: Action) => {
             return {
                 ...state,
                 loading: false,
-                error: null,
+                error: undefined,
                 tasks: updatedTasks,
                 hasMore: action.hasMore,
             }
@@ -67,7 +67,7 @@ const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskSta
         tasks: initialTasks,
         page: initialPage,
         loading: false,
-        error: null,
+        error: undefined,
         hasMore: true,
     });
 
@@ -88,13 +88,13 @@ const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskSta
     }, []);
 
     // handles it's errors
-    const fetchTasks = useCallback(async (pageNum: number) => {
+    const fetchTasks = useCallback(async (pageNum: number): Promise<void> => {
         dispatch({ type: 'FETCHING_TASKS_INIT' })
 
         const response = await fetch(`/api/tasks?page=${pageNum}`);
         if (response.status === 200) {
             try {
-                const latestTasks = await response.json();
+                const latestTasks: FetchTasksResponse = await response.json();
                 dispatch({
                     type: 'FETCHING_TASKS_SUCCESS',
                     tasks: latestTasks.tasks,
@@ -102,7 +102,7 @@ const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskSta
                 })
             } catch (e) {
                 // needs to be displayed, could lead to glitch
-                dispatch({type: 'ERROR', error: `Set session storage failure: ${e}\nTry closing the tab and navigating to the page again.`})
+                dispatch({ type: 'ERROR', error: `Set session storage failure: ${e}\nTry closing the tab and navigating to the page again.` })
             }
 
         } else {
@@ -111,7 +111,7 @@ const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskSta
         }
     }, [state.page, shouldFetch]);
 
-    useEffect(() => {
+    useEffect((): void => {
         if (shouldFetch) {
             fetchTasks(state.page);
             setShouldFetch(false);
@@ -120,7 +120,7 @@ const useTaskStateManager = (initialTasks: Task[], initialPage: number): TaskSta
 
 
     // need a state updater for the page!
-    const nextPage = () => {
+    const nextPage = (): void => {
         setShouldFetch(true);
         dispatch({ type: 'INCREMENT_PAGE' })
     };

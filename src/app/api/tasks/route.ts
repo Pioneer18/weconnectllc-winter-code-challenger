@@ -18,7 +18,7 @@
 // the README specifies that this file does have issues
 
 import { NextRequest, NextResponse } from "next/server";
-import { PaginatedTasks, Task } from "@/types/task";
+import { FetchTasksResponse, Task } from "@/types/task";
 
 // this should be a databse query, but ok for challenge?
 const tasks: Task[] = Array.from({ length: 50 }, (_, index) => ({
@@ -34,7 +34,7 @@ const getTasks = (): Task[] => {
   }));
 };
 
-const getPaginatedTasks = (page: number, pageSize: number): PaginatedTasks => {
+const getPaginatedTasks = (page: number, pageSize: number): FetchTasksResponse => {
   const startIndex = (page - 1) * pageSize;
   const endIndex = startIndex + pageSize;
   const allTasks = getTasks();
@@ -46,7 +46,6 @@ const getPaginatedTasks = (page: number, pageSize: number): PaginatedTasks => {
 };
 
 const getPageParam = (searchParams: URLSearchParams): number => {
-  // should there be more validation on page?
   const page = parseInt(searchParams.get("page") || "1");
   if (isNaN(page) || page < 1) {
     throw new Error("Invalid page parameter");
@@ -58,7 +57,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const { searchParams } = new URL(request.url);
     const page = getPageParam(searchParams);
-    const pageSize = 5; // this shuoldn't be hardcoded?
+    const pageSize = 5;
+
+    // get pagesize from URLSearchParams?
 
     const result = getPaginatedTasks(page, pageSize);
     return NextResponse.json(result);

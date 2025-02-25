@@ -1,3 +1,6 @@
+/**
+ * Interfaces
+ */
 export interface Task {
   id: number;
   title: string;
@@ -8,20 +11,24 @@ export interface Task {
 export interface TaskStateManagerProps {
   loading: boolean,
   hasMore: boolean,
-  error: string | null,
+  error: string | undefined,
   tasks: Task[],
   page: number,
 }
 
+export interface FetchTasksResponse {
+  tasks: Task[],
+  hasMore: boolean;
+}
+
+/**
+ * Types
+ */
+
 export type TaskStateManagerReturn = [
   boolean,
   boolean,
-  string | null,
+  string | undefined,
   Task[],
   () => void
 ];
-
-export interface PaginatedTasks {
-  tasks: Task[];
-  hasMore: boolean;
-}
